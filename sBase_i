@@ -1,0 +1,57 @@
+Imports System.Windows.Forms
+Imports System.Drawing
+Imports iAttribute.cAspect_i.vBase_i
+Imports iAttribute.cAspect_i.Attributes_i
+
+
+Namespace cAspect_i
+
+    Public Class sBase_i
+        Inherits Attributes_i
+
+        Public Shared call_type As String
+        Public Shared Function IF_(i As String)
+            Dim o As Form = Bse
+            Dim expression As String = getExpression(i)
+            Dim expressionobj As Object = getExpressionObj(i)
+            Dim expressionconstruct As String = getExpressionConstruct(i)
+            Dim s As String = getStatement(i)
+
+            If i.Contains("ofType[Method]") Then
+                Obj = expressionobj
+                If CallByName(New oBase_i, Obj.GetType.Name.ToLower & expressionconstruct.ToString & "_ByString", CallType.Method, CallByName(New vBase_i, Obj.GetType.GetProperty(expressionconstruct).PropertyType.Name & "_i", CallType.Method, i)) Then
+
+                End If
+                call_type = "Method"
+            ElseIf i.Contains("ofType[Get]") Then
+                call_type = "Get"
+                'CallByName(Attributes_i.Bse, , CallType.Get)
+            End If
+
+        End Function
+
+        Public Shared Function getExpression(i As String)
+            Dim expression As String = i.Replace("#IF(" & "ofType[" & call_type & "]", "").Split(")")(0)
+            Return expression
+        End Function
+
+        Public Shared Function getExpressionObj(i As String)
+            Dim temp As String = i.Split("=")(0).Split(".")(0)
+            Dim obj As Object = Bse.Controls.Find(i, True)(0)
+            Return obj
+        End Function
+
+        Public Shared Function getExpressionConstruct(i As String)
+            Dim temp As String = i.Split("=")(0).Split(".")(1)
+            Return temp
+        End Function
+
+        Public Shared Function getStatement(i As String)
+            Dim statement As String = i.Split(")")(1).Replace("#THEN(", "").Trim("()")
+            Return statement
+        End Function
+
+
+    End Class
+
+End Namespace
